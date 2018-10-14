@@ -1,7 +1,13 @@
 import graphene
 from graphene_django.types import DjangoObjectType
 
-from ..models import Recipe
+from ..models import Recipe, RecipeElement
+
+
+class RecipeElementNode(DjangoObjectType):
+
+    class Meta:
+        model = RecipeElement
 
 class RecipeNode(DjangoObjectType):
 
@@ -9,7 +15,7 @@ class RecipeNode(DjangoObjectType):
         model = Recipe
 
 class RecipeQuery(object):
-    recipe = graphene.Field(Recipenode, id=graphene.Int(required=True))
+    recipe = graphene.Field(RecipeNode, id=graphene.Int(required=True))
     all_recipes = graphene.List(RecipeNode)
 
     def resolve_recipe(self, info, **kwargs):

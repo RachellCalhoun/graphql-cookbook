@@ -9,7 +9,15 @@ class RecipeNode(DjangoObjectType):
         model = Recipe
 
 class RecipeQuery(object):
+    recipe = graphene.Field(Recipenode, id=graphene.Int(required=True))
     all_recipes = graphene.List(RecipeNode)
+
+    def resolve_recipe(self, info, **kwargs):
+        id = kwargs.get('id')
+        try:
+            return Recipe.objects.get(pk=id)
+        except (Recipe.DoesNotExist):
+            return None
 
     def resolve_all_recipes(self, info, **kwargs):
         return Recipe.objects.all()

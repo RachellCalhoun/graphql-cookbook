@@ -8,13 +8,18 @@ from graphene_django.types import DjangoObjectType
 
 from ..models import Category, Ingredient
 
-# filters
+
+# Filters
+
 class IngredientFilterSet(django_filters.FilterSet):
     category = django_filters.CharFilter('category__name', lookup_expr='exact')
 
     class Meta:
         model = Ingredient
         fields = ['category']
+
+
+# Types
 
 class CategoryNode(DjangoObjectType):
 
@@ -34,11 +39,10 @@ class IngredientNode(DjangoObjectType):
 class IngredientQuery(object):
     all_categories = DjangoFilterConnectionField(CategoryNode)
     all_ingredients = DjangoFilterConnectionField(
-        IngredientNode,
-        filterset_class=IngredientFilterSet
-        )
+        IngredientNode, filterset_class=IngredientFilterSet)
 
-# mutations
+
+# Mutations
 
 class AddIngredientMutation(relay.ClientIDMutation):
 
@@ -54,9 +58,11 @@ class AddIngredientMutation(relay.ClientIDMutation):
         name = input.get('name')
         notes = input.get('notes', '')
         category_id = input.get('category')
+
         category = relay.Node.get_node_from_global_id(info, category_id)
         if category is None:
             raise GraphQLError('Category does not exist!')
+
         ingredient = Ingredient.objects.create(name=name, notes=notes, category=category)
         return cls(ingredient=ingredient)
 

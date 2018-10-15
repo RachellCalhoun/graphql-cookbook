@@ -8,7 +8,7 @@ from graphene_django.types import DjangoObjectType
 from ..models import Recipe, RecipeElement
 
 
-# types
+# Types
 
 class RecipeElementNode(DjangoObjectType):
     unit_display = graphene.String()
@@ -32,7 +32,8 @@ class RecipeQuery(object):
     recipe = relay.Node.Field(RecipeNode)
     all_recipes = DjangoFilterConnectionField(RecipeNode)
 
-# mutations
+
+# Mutations
 
 class RecipeElementInput(graphene.InputObjectType):
     ingredient = graphene.ID(required=True)
@@ -69,7 +70,7 @@ class UpdateRecipeMutation(relay.ClientIDMutation):
         id = input.pop('id')
         recipe = relay.Node.get_node_from_global_id(info, id)
         if recipe is None:
-            raise GraphQLError('Recipe does not exist!')
+            raise GraphQLError('Recipe does not exist')
 
         elements = input.pop('elements', [])
         cls.set_elements(info, recipe, elements)
